@@ -16,19 +16,14 @@ import {
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker'
 
-import ToastExample from './ToastExample';
-import blockhash from './blockhashcore'
-
-const staticuri = 'content://com.google.android.apps.photos.contentprovider/-1/1/content%3A%2F%2Fmedia%2Fexternal%2Fimages%2Fmedia%2F25862/ORIGINAL/NONE/image%2Fjpeg/541359684'
-const staticuri1 = '/storage/emulated/0/DCIM/Camera/IMG_20200513_100012369.jpg'
-const staticuri2 = './images/image-rect.png'
+import PHashNative from './PHashNative';
 
 class MyComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       initialImageLoaded : false,
-      imgsource : {uri : 'https://images.wagwalkingweb.com/media/articles/care/why-is-my-dog-sneezing-blood/why-is-my-dog-sneezing-blood.jpg'},
+      imgsource : {},
       phashresult : '',
       pickImageDisabled : false
     };
@@ -44,6 +39,13 @@ class MyComponent extends React.Component {
     console.log(JSON.stringify(this.state));
   }
 
+  callComputePhash(path) {
+    PHashNative.computePHash(path).then((pHashResult) => {
+      console.log(`Phash: ${pHashResult.pHash}`);
+      console.log(`Runtime: ${pHashResult.Runtime}`);
+      this.nodejsListener(pHashResult.pHash);
+    })
+  }
 
   pickImage() {
     ImagePicker.launchImageLibrary({}, (response) => {
@@ -55,34 +57,13 @@ class MyComponent extends React.Component {
         console.log('User tapped custom button: ', response.customButton);
       } else {
         const source = { uri: response.uri };
-        // console.log(`Sourcexx: ${JSON.stringify(response.path, null,2)}`)
-        console.log(`Sourcexx: ${response.path}`);
-        console.log(`Source: ${JSON.stringify(source)}`)
         this.setState({
           initialImageLoaded : true,
           imgsource : source,
           pickImageDisabled : true,
           phashresult : 'Computing pHash. Please wait...'
         });
-        this.nodejsListener('merihash');
-        ToastExample.show('Awesome', ToastExample.SHORT);
-        let startTime = Date.now();
-        ToastExample.getPixels(response.path).then((image) => {
-          console.log("----------------------");
-          console.log(image.width);
-          console.log(image.height);
-          console.log(image.hasAlpha);
-          console.log(`Total time writing Writeable array: ${image["Start time"]}`);
-          console.log(`Total time getPixels: ${image["End time"]}`);
-          console.log(Date.now() - startTime);
-          // console.log(image.data);
-          let hashC = blockhash.bmvbhash(image, 8);
-          this.nodejsListener(hashC);
-        }).catch(err => {
-          console.log('***********************');
-          console.log(err);
-        });
-        // NativeModules.ToastExample.show('Awesome', ToastExample.SHORT);
+        this.callComputePhash(response.path);
       }
     });
   }

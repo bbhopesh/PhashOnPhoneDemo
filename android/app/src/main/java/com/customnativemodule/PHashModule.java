@@ -10,17 +10,17 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableNativeMap;
 
 
-public class BitmapModule extends ReactContextBaseJavaModule {
+public class PHashModule extends ReactContextBaseJavaModule {
     private static ReactApplicationContext reactContext;
 
-    BitmapModule(ReactApplicationContext context) {
+    PHashModule(ReactApplicationContext context) {
         super(context);
         reactContext = context;
     }
 
     @Override
     public String getName() {
-        return "BitmapNative";
+        return "PHashNative";
     }
 
     @ReactMethod
@@ -36,7 +36,7 @@ public class BitmapModule extends ReactContextBaseJavaModule {
             }
 
             RGBAImageDataInterface imageData = new RGBAImageDataBitmapSimple(bitmap);
-            // Surprisingly Smart ImageData is much slower.
+            // Surprisingly Smart ImageData is much slower than Simple.
             // RGBAImageDataInterface imageData = new RGBAImageDataBitmapSmart(bitmap);
             String pHash = BlockhashCore.computePhash(imageData);
             result.putString("Runtime", Long.toString(System.currentTimeMillis() - startTime));

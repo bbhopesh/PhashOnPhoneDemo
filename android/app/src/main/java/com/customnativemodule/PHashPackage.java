@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class CustomBitmapPackage implements ReactPackage {
+public class PHashPackage implements ReactPackage {
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
