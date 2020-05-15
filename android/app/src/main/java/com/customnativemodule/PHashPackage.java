@@ -22,7 +22,7 @@ public class CustomBitmapPackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new BitmapModule(reactContext));
+        modules.add(new PHashModule(reactContext));
 
         return modules;
     }
