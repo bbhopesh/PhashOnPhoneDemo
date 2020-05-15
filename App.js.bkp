@@ -17,29 +17,17 @@ import {
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker'
 import Canvas, {Image as CanvasImage} from 'react-native-canvas'
-import { NativeModules } from 'react-native';
-
-const { ToastExample } = NativeModules.ToastExample;
-
-console.log("+++++++++++++++++++++++++++++");
-console.log(ToastExample);
-console.log("+++++++++++++++++++++++++++++");
-
-const staticuri = 'content://com.google.android.apps.photos.contentprovider/-1/1/content%3A%2F%2Fmedia%2Fexternal%2Fimages%2Fmedia%2F25862/ORIGINAL/NONE/image%2Fjpeg/541359684'
-const staticuri1 = '/storage/emulated/0/DCIM/Camera/IMG_20200513_100012369.jpg'
-const staticuri2 = './images/image-rect.png'
 
 class MyComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       initialImageLoaded : false,
-      imgsource : {uri : 'https://images.wagwalkingweb.com/media/articles/care/why-is-my-dog-sneezing-blood/why-is-my-dog-sneezing-blood.jpg'},
+      imgsource : {},
       phashresult : '',
       pickImageDisabled : false
     };
     this.pickImage = this.pickImage.bind(this);
-    this.handleCanvas = this.handleCanvas.bind(this);
     nodejs.start('main.js');
     nodejs.channel.addListener(
       'message',
@@ -59,7 +47,6 @@ class MyComponent extends React.Component {
   }
 
   myfun(canvas, uri) {
-    console.log(`URI: ${uri}`);
     let canvasImage = new CanvasImage(canvas);
     canvasImage.src = uri;
     canvas.width = canvasImage.width;
@@ -67,70 +54,16 @@ class MyComponent extends React.Component {
     let context = canvas.getContext('2d');
     context.drawImage(canvasImage, 0, 0, canvasImage.width, canvasImage.height);
     console.log ('-------------------------------------')
-//     console.log(context.getImageData(0, 0, canvasImage.width, canvasImage.height).data);
-    console.log(`Width: ${canvasImage.width}, Height: ${canvasImage.height}`);
+    console.log(context.getImageData(0, 0, canvasImage.width, canvasImage.height).data);
     console.log ('-------------------------------------')
     
   }
 
-  handleCanvas1 = (canvas) => {
+  handleCanvas = (canvas) => {
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = 'purple';
     ctx.fillRect(0, 0, 100, 100);
     console.log(ctx.getImageData(0, 0, 100, 100))
-  }
-  handleCanvasX = (uri) => {
-      var canvas = <Canvas/>;
-      console.log(">>>>>>>>>>>>Called again<<<<<<<<<<<<<<<<<<")
-      const image = new CanvasImage(canvas);
-      const ctx = canvas.getContext('2d');
-      //image.src = "https://images.wagwalkingweb.com/media/articles/care/why-is-my-dog-sneezing-blood/why-is-my-dog-sneezing-blood.jpg";
-      image.src = uri;
-      //image.src = require(staticuri1)
-      canvas.width = 100;
-      canvas.height = 100;
-      image.addEventListener('load', () => {
-        console.log('--------------------------');
-        console.log(`Width: ${image.width}, Height: ${image.height}`);
-        console.log('--------------------------');
-        //canvas.width = image.width;
-        // canvas.height = image.height;
-        // ctx.drawImage(image, 0, 0, image.width, image.width);
-        ctx.drawImage(image, 0, 0, 100, 100);
-        /*ctx.getImageData(0,0,canvas.width, canvas.height).then(imgData => {
-          const data = Object.values(imgData.data);
-          const length = Object.keys(imgData).length;
-          console.log(`Length: ${length}, Data: ${(JSON.stringify(imgData.data, null, 2)).substring(0,100)}`);
-        });*/
-      });
-  }
-  handleCanvas = (canvas) => {
-    console.log(">>>>>>>>>>>>Called again")
-    const image = new CanvasImage(canvas);
-    //const pImage = new Image();
-    console.log('abc');
-    console.log(require(staticuri2))
-    //pImage.source = require(staticuri2)
-    const ctx = canvas.getContext('2d');
-    //image.src = "https://images.wagwalkingweb.com/media/articles/care/why-is-my-dog-sneezing-blood/why-is-my-dog-sneezing-blood.jpg";
-    image.src = this.state.imgsource.uri;
-    //image.src = require(staticuri1)
-    canvas.width = 100;
-    canvas.height = 100;
-    image.addEventListener('load', () => {
-      console.log('--------------------------');
-      console.log(`Width: ${image.width}, Height: ${image.height}`);
-      console.log('--------------------------');
-      //canvas.width = image.width;
-      // canvas.height = image.height;
-      // ctx.drawImage(image, 0, 0, image.width, image.width);
-      ctx.drawImage(image, 0, 0, 100, 100);
-      /*ctx.getImageData(0,0,canvas.width, canvas.height).then(imgData => {
-        const data = Object.values(imgData.data);
-        const length = Object.keys(imgData).length;
-        console.log(`Length: ${length}, Data: ${(JSON.stringify(imgData.data, null, 2)).substring(0,100)}`);
-      });*/
-    });
   }
 
   pickImage() {
@@ -153,8 +86,7 @@ class MyComponent extends React.Component {
           phashresult : 'Computing pHash. Please wait...'
         });
         this.nodejsListener('merihash');
-        NativeModules.ToastExample.show('Awesome', ToastExample.SHORT);
-        //this.handleCanvasX(source.uri);
+        this.myfun(new Canvas(), source.uri);
     
         
         // nodejs.channel.send(response.path);

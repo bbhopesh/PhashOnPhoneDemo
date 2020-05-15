@@ -10,10 +10,13 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "imghash": "0.0.7",
     "nodejs-mobile-react-native": "^0.6.0",
     "react": "16.11.0",
     "react-native": "0.62.2",
-    "react-native-image-picker": "^2.3.1"
+    "react-native-canvas": "^0.1.37",
+    "react-native-image-picker": "^2.3.1",
+    "react-native-webview": "^9.4.0"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",
