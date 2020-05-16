@@ -40,6 +40,7 @@ class MyComponent extends React.Component {
   }
 
   callComputePhash(path) {
+    console.log(`Path: ${path}`);
     PHashNative.computePHash(path).then((pHashResult) => {
       console.log(`Phash: ${pHashResult.pHash}`);
       console.log(`Runtime: ${pHashResult.Runtime}`);
