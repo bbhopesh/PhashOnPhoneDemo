@@ -9,6 +9,8 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableNativeMap;
 
+import java.util.Arrays;
+
 
 public class PHashModule extends ReactContextBaseJavaModule {
     private static ReactApplicationContext reactContext;
@@ -28,15 +30,10 @@ public class PHashModule extends ReactContextBaseJavaModule {
         try {
             long startTime = System.currentTimeMillis();
             WritableNativeMap result = new WritableNativeMap();
-            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
 
-            if (bitmap == null) {
-                promise.reject("Failed to decode. Path is incorrect or image is corrupted");
-                return;
-            }
 
-            RGBAImageDataInterface imageData = new RGBAImageDataAndroidBitmapSimple(bitmap);
-            String pHash = BlockhashCore.computePhash(imageData);
+            RGBAImageDataInterface imageData = RGBAImageDataFactoryAndroid.fromImagePath(filePath);
+            String pHash = BlockhashCore.blockHashHex(imageData);
             result.putString("Runtime", Long.toString(System.currentTimeMillis() - startTime));
             result.putString("pHash", pHash);
 

@@ -1,24 +1,21 @@
 package com.customnativemodule;
 
-import android.graphics.Bitmap;
+public class RGBAImageDataFromARGBPixelsSimple implements RGBAImageDataInterface {
+    private final int[] argbPixels;
+    private final int width;
+    private final int height;
 
-public class RGBAImageDataAndroidBitmapSimple implements RGBAImageDataInterface {
-    private int[] pixels;
-    private int width;
-    private int height;
-
-    public RGBAImageDataAndroidBitmapSimple(Bitmap bitmap) {
-        this.width = bitmap.getWidth();
-        this.height = bitmap.getHeight();
-        this.pixels = new int[this.width * this.height];
-        bitmap.getPixels(this.pixels, 0, this.width, 0, 0, this.width, this.height);
+    public RGBAImageDataFromARGBPixelsSimple(int[] argbPixels, int width, int height) {
+        this.argbPixels = argbPixels;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
     public int value(int index) {
-        int pixedlIndex = index / 4;
+        int pixelIndex = index / 4;
         int rgbaIndex = index % 4;
-        int pixel = this.pixels[pixedlIndex];
+        int pixel = this.argbPixels[pixelIndex];
         if (rgbaIndex == 0) {
             // Red
             return (pixel >> 16) & 0xff;

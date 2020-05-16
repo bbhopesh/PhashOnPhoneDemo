@@ -74,17 +74,17 @@ public class BlockhashCore {
         return hex.toString();
     }
 
-    /** Calculate perceptual hash for an RGBA image using quick method.
+    /**
+     * Calculate perceptual hash for an RGBA image using quick method.
      *
      * Quick method uses rounded block sizes and is less accurate in case image
      * width and height are not divisible by the number of bits.
      *
-     * Parameters:
-     *
-     * data - RGBA image data.
-     * bits - number of blocks to divide the image by horizontally and vertically.
+     * @param data RGBA image data.
+     * @param bits Number of blocks to divide the image by horizontally and vertically.
+     * @return Block hash bit array where each element in array is either 0 or 1.
      */
-    private static int[] blockhashQuick(RGBAImageDataInterface data, int bits) {
+    private static int[] blockHashQuick(RGBAImageDataInterface data, int bits) {
         int width = data.getWidth();
         int height = data.getHeight();
         int blockWidth = width / bits;
@@ -116,16 +116,16 @@ public class BlockhashCore {
         return blocks;
     }
 
-    /** Calculate perceptual hash for an RGBA image using precise method.
+    /**
+     * Calculate perceptual hash for an RGBA image using precise method.
      *
      * Precise method puts weighted pixel values to blocks according to pixel
      * area falling within a given block and provides more accurate results
      * in case width and height are not divisible by the number of bits.
      *
-     * Parameters:
-     *
-     * data - RGBA image data.
-     * bits - number of blocks to divide the image by horizontally and vertically.
+     * @param data RGBA image data.
+     * @param bits number of blocks to divide the image by horizontally and vertically.
+     * @return Block hash bit array where each element in array is either 0 or 1.
      */
     private static int[] blockHash(RGBAImageDataInterface data, int bits) {
         int width = data.getWidth();
@@ -135,7 +135,7 @@ public class BlockhashCore {
         boolean evenY = height % bits == 0;
 
         if (evenX && evenY) {
-            return blockhashQuick(data, bits);
+            return blockHashQuick(data, bits);
         }
 
         double blockWidth = (double) width / (double) bits;
@@ -209,7 +209,69 @@ public class BlockhashCore {
         return result;
     }
 
-    public static String computePhash(RGBAImageDataInterface data) {
-        return bitsToHexHash(blockHash(data, 8));
+    /**
+     * Computes block hash and returns hex value.
+     *
+     * Equivalent to calling blockHashHex(data, 8)
+     *
+     * @param data RGBA image data.
+     * @return Block hash value hex string.
+     */
+    public static String blockHashHex(RGBAImageDataInterface data) {
+        return blockHashHex(data, 8);
+    }
+
+    /**
+     * Computes block hash and returns hex value.
+     *
+     * Equivalent to calling blockHashHex(data, 8)
+     *
+     * @param data RGBA image data.
+     * @param bits Block 1-d dimensions.
+     * @return Block hash value hex string.
+     */
+    public static String blockHashHex(RGBAImageDataInterface data, int bits) {
+        return bitsToHexHash(blockHash(data, bits));
+    }
+
+    /**
+     * Computes block hash using quick algo and returns hex value.
+     *
+     * Equivalent to calling blockHashHexQuick(data, 8)
+     *
+     * @param data RGBA image data.
+     * @return Block hash value hex string.
+     */
+    public static String blockHashHexQuick(RGBAImageDataInterface data) {
+        return blockHashHexQuick(data, 8);
+    }
+
+    /**
+     * Computes block hash using quick algo and returns hex value.
+     *
+     * @param data RGBA image data.
+     * @param bits Block 1-d dimensions.
+     * @return Block hash value hex string.
+     */
+    public static String blockHashHexQuick(RGBAImageDataInterface data, int bits) {
+        return bitsToHexHash(blockHashQuick(data, bits));
+    }
+
+    public static int hammingDistance(String hash1, String hash2) {
+        int[] oneBits = new int[]{0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4};
+        int d = 0;
+
+        if (hash1.length() != hash2.length()) {
+            throw new RuntimeException("Can't compare hashes with different length");
+        }
+
+        for (int i = 0; i < hash1.length(); i++) {
+            int n1 = Integer.parseInt(hash1.substring(i, i+1), 16);
+            int n2 = Integer.parseInt(hash2.substring(i, i+1), 16);
+            d += oneBits[n1 ^ n2];
+        }
+        return d;
     }
 }
+
+
