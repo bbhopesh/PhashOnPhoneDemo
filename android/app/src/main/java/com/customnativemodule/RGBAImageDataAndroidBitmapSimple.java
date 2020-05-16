@@ -2,24 +2,23 @@ package com.customnativemodule;
 
 import android.graphics.Bitmap;
 
-// Surprisingly this is faster than Smart implementation.
-public class RGBAImageDataBitmapSmart implements RGBAImageDataInterface {
-    private Bitmap bitmap;
+public class RGBAImageDataAndroidBitmapSimple implements RGBAImageDataInterface {
+    private int[] pixels;
     private int width;
     private int height;
 
-    public RGBAImageDataBitmapSmart(Bitmap bitmap) {
-        this.bitmap = bitmap;
-        this.width = this.bitmap.getWidth();
-        this.height = this.bitmap.getHeight();
+    public RGBAImageDataAndroidBitmapSimple(Bitmap bitmap) {
+        this.width = bitmap.getWidth();
+        this.height = bitmap.getHeight();
+        this.pixels = new int[this.width * this.height];
+        bitmap.getPixels(this.pixels, 0, this.width, 0, 0, this.width, this.height);
     }
+
     @Override
     public int value(int index) {
-        int pixelIndex = index / 4;
-        int pixelIndexY = pixelIndex / this.width;
-        int pixelIndexX = pixelIndex - (pixelIndexY * this.width);
+        int pixedlIndex = index / 4;
         int rgbaIndex = index % 4;
-        int pixel = this.bitmap.getPixel(pixelIndexX, pixelIndexY);
+        int pixel = this.pixels[pixedlIndex];
         if (rgbaIndex == 0) {
             // Red
             return (pixel >> 16) & 0xff;

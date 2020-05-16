@@ -35,9 +35,7 @@ public class PHashModule extends ReactContextBaseJavaModule {
                 return;
             }
 
-            RGBAImageDataInterface imageData = new RGBAImageDataBitmapSimple(bitmap);
-            // Surprisingly Smart ImageData is much slower than Simple.
-            // RGBAImageDataInterface imageData = new RGBAImageDataBitmapSmart(bitmap);
+            RGBAImageDataInterface imageData = new RGBAImageDataAndroidBitmapSimple(bitmap);
             String pHash = BlockhashCore.computePhash(imageData);
             result.putString("Runtime", Long.toString(System.currentTimeMillis() - startTime));
             result.putString("pHash", pHash);
