@@ -1,15 +1,12 @@
 package com.customnativemodule;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableNativeMap;
 
-import java.util.Arrays;
+import io.blockhash.android.BlockhashAndroid;
 
 
 public class PHashModule extends ReactContextBaseJavaModule {
@@ -31,9 +28,7 @@ public class PHashModule extends ReactContextBaseJavaModule {
             long startTime = System.currentTimeMillis();
             WritableNativeMap result = new WritableNativeMap();
 
-
-            RGBAImageDataInterface imageData = RGBAImageDataFactoryAndroid.fromImagePath(filePath);
-            String pHash = BlockhashCore.blockHashHex(imageData);
+            String pHash = BlockhashAndroid.computeBlockHash(filePath, 8);
             result.putString("Runtime", Long.toString(System.currentTimeMillis() - startTime));
             result.putString("pHash", pHash);
 

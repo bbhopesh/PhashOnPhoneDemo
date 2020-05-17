@@ -187,8 +187,11 @@ android {
     }
 }
 
+
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation files('libs/blockhash-android-lib-release.aar')
+    implementation files('libs/blockhash-java-lib.jar')
+
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
